@@ -66,3 +66,31 @@ The script generates:
 
 This file contains the normalized ssGSEA pathway activity scores
 used for subsequent pathway-level analyses.
+
+
+## Clinical data preparation
+
+Clinical annotations were obtained from cBioPortal for the
+Breast Invasive Carcinoma (TCGA, PanCancer Atlas) cohort.
+
+The following cBioPortal clinical files were used:
+
+- `clinical_patient`
+- `clinical_sample`
+
+The patient-level and sample-level clinical tables were manually
+aligned and combined in Microsoft Excel to generate the analysis-ready
+file:
+
+`Clinical_data.csv`
+
+Clinical annotations were matched according to the corresponding
+patient/sample identifiers, and the resulting sample identifiers were
+aligned with those used in `Gene_expression.csv`.
+
+No statistical transformation was applied during this step; the
+procedure consisted of table alignment, annotation merging, and
+formatting for downstream analysis.
+
+Because the original cBioPortal clinical files are publicly available,
+the complete source files are not redistributed in this repository.
