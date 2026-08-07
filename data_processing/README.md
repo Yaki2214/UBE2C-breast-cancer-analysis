@@ -3,6 +3,13 @@
 This directory contains scripts used to generate derived input data
 for the integrated analysis tool.
 
+### Software environment
+
+The manuscript-associated ssGSEA analysis was performed using:
+
+- R version 4.5.2
+- GSVA version 2.4.0
+
 ## ssGSEA pathway scoring
 
 Pathway activity scores were generated from the gene-expression
