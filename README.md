@@ -44,7 +44,7 @@ The program provides the following analysis modules:
 
 ## Installation
 
-Python 3.x is required.
+Python 3.14.0 is required.
 
 Install the required Python packages using:
 
