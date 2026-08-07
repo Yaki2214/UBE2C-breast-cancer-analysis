@@ -26,7 +26,7 @@ except ImportError:
     HAS_ADJUST_TEXT = False
     print("\n[System Tip] adjustText is not installed (pip install adjustText), volcano plot labels may overlap.")
 
-# ================= [v81.1] Global Environment and Plot Settings =================
+# ================= Global Environment and Plot Settings =================
 IMG_EXT = "png"  
 IMG_DPI = 300    
 FDR_ENABLED = True
@@ -782,7 +782,7 @@ def show_scatter_plot(vec1, vec2, name1, name2, r_val, p_val, n_val):
     try: plt.show(); plt.close()
     except: pass
 
-def save_subtype_scatter(df_data, name1, name2, output_folder, subtype_name, r_val, p_val, n_val):
+def save_subtype_scatter(df_data, name1, name2, output_folder, subtype_name, r_val, p_val, n_val): # Save scatter plot for a specific subtype
     setup_plot_style()
     fig, ax = plt.subplots(figsize=(8, 7))
     title = f"{name1} vs {name2}\n({subtype_name})"
@@ -791,8 +791,7 @@ def save_subtype_scatter(df_data, name1, name2, output_folder, subtype_name, r_v
     plt.savefig(os.path.join(output_folder, fname), dpi=IMG_DPI)
     plt.close()
 
-# [v81.1 Fix] Matplotlib requires plural arguments: linewidths & edgecolors
-def _draw_scatter(ax, df, x, y, r, p, n, title):
+def _draw_scatter(ax, df, x, y, r, p, n, title): # Matplotlib requires plural arguments: linewidths & edgecolors
     df = df.copy()
     df[x] = pd.to_numeric(df[x], errors='coerce')
     df[y] = pd.to_numeric(df[y], errors='coerce')
@@ -1614,7 +1613,7 @@ def run_patient_heatmap(target_name, target_data, gene_list, df_gene, df_pathway
         matrix = pd.DataFrame(plot_data, index=row_labels, columns=sorted_patients).fillna(0)
         
         try:
-            raw_fname = f"RawData_PatHeatmap_{clean_filename(target_name)}_{clean_filename(grp_name)}.xlsx"
+            raw_fname = f"RawData_PatHeatmap_{clean_filename(target_name)}_{clean_filename(grp_name)}.xlsx" # Raw data export
             matrix.to_excel(os.path.join(get_desktop_path(), raw_fname))
         except: pass
         
@@ -1664,7 +1663,7 @@ def run_patient_heatmap(target_name, target_data, gene_list, df_gene, df_pathway
             fig_h = max(6, len(row_labels) * 0.5)
             plt.figure(figsize=(fig_w, fig_h))
             
-            ax = sns.heatmap(matrix, cmap=cmap, vmin=-3, vmax=3,
+            ax = sns.heatmap(matrix, cmap=cmap, vmin=-3, vmax=3, # Heatmap plot
                         xticklabels=False, yticklabels=True, 
                         cbar_kws={'label': 'Expression (Z)', 'orientation': 'horizontal', 'pad': 0.12})
             ax.axhline(1, color='black', linewidth=3)
@@ -1702,8 +1701,7 @@ def run_patient_heatmap(target_name, target_data, gene_list, df_gene, df_pathway
         plt.savefig(os.path.join(get_desktop_path(), img_fname), dpi=IMG_DPI, bbox_inches='tight') 
         plt.close()
 
-# [v81.1 修正] Matplotlib 強制複數參數：linewidths & edgecolors
-def draw_ext_bar_lollipop(ax, df, title, highlight_set, color_high, color_norm, chart_style, val_col, val_label, x_col='mlog10p', x_label='-log10(P-value)', label_pad=5, size_col=None, size_range=(200, 800)):
+def draw_ext_bar_lollipop(ax, df, title, highlight_set, color_high, color_norm, chart_style, val_col, val_label, x_col='mlog10p', x_label='-log10(P-value)', label_pad=5, size_col=None, size_range=(200, 800)): # Matplotlib requires plural arguments: linewidths & edgecolors
     df = df.copy()
     y_pos = np.arange(len(df))
     colors = [color_high if normalize_name(tf) in highlight_set else color_norm for tf in df['Item_Name']]
@@ -1990,7 +1988,7 @@ def draw_ext_volcano(ax, df, title, target_genes, y_thresh, y_dir, x_thresh_r, x
     super_norm = set([normalize_name(t) for t in (super_targets or [])])
     
     # Calculate data range to use as a basis for small perturbations
-    x_range = df['Plot_X'].max() - df['Plot_X'].min()
+    x_range = df['Plot_X'].max() - df['Plot_X'].min() # Calculate data range
     y_range = df['Plot_Y'].max() - df['Plot_Y'].min()
     x_range = x_range if x_range != 0 else 1
     y_range = y_range if y_range != 0 else 1
@@ -2058,7 +2056,7 @@ def draw_ext_volcano(ax, df, title, target_genes, y_thresh, y_dir, x_thresh_r, x
                             arrowprops=dict(arrowstyle='-', color='#D62728', lw=1.5, alpha=0.9),
                             force_text=(0.5, 1.0),
                             force_points=(1.0, 1.5),
-                            expand_text=(1.2, 1.2),
+                            expand_text=(1.2, 1.2), # Expand text
                             expand_points=(1.2, 1.2),
                             max_iter=3000)
             
@@ -2070,7 +2068,7 @@ def draw_ext_volcano(ax, df, title, target_genes, y_thresh, y_dir, x_thresh_r, x
                 adjust_text(texts_norm, ax=ax, 
                             add_objects=texts_super,  # The core magic: prevent normal labels from overlapping super labels
                             arrowprops=dict(arrowstyle='-', color='#777777', lw=1.0, alpha=0.8),
-                            force_text=f_txt,
+                            force_text=f_txt, # Force text
                             force_points=f_pts,
                             expand_text=e_txt,
                             expand_points=(1.5, 1.5),
@@ -2099,7 +2097,7 @@ def run_correlation_screening(target_name, target_data, df_gene, df_pathway, p_v
     def get_top_tables(df_res, type_name):
         if df_res.empty: return pd.DataFrame(), pd.DataFrame()
         df_sig = df_res[df_res['P'] < p_val_thresh].copy()        
-        # [v82.2 Fix] Add a hard limit to prevent memory explosion if p-value threshold is too loose.
+        # Add a hard limit to prevent memory explosion if p-value threshold is too loose.
         pos = df_sig[df_sig['R'] > 0].sort_values(by='R', ascending=False)
         neg = df_sig[df_sig['R'] < 0].sort_values(by='R', ascending=True)
         pos = pos.head(5000)
@@ -2115,7 +2113,7 @@ def run_correlation_screening(target_name, target_data, df_gene, df_pathway, p_v
     # [FDR] Combine p-values from genes and pathways for FDR correction
     all_results = pd.concat([df_g, df_p], ignore_index=True)
     if FDR_ENABLED:
-        if not all_results.empty:
+        if not all_results.empty: # Handle NaN P-values
             all_results['FDR'] = multipletests(all_results['P'].dropna(), method='fdr_bh')[1] if not all_results['P'].dropna().empty else np.nan
             df_g = all_results.iloc[:len(df_g)].copy()
             df_p = all_results.iloc[len(df_g):].copy()
@@ -2137,7 +2135,7 @@ def run_correlation_screening(target_name, target_data, df_gene, df_pathway, p_v
         except: pass
 
 def run_subtype_screening(target_name, target_data, df_gene, df_pathway, df_clinical, subtype_col, p_val_thresh=0.05, subtypes_to_run=None, gene_to_drugs=None, pathway_to_genes=None):    
-    # [v82.1 Fix] If no stratification (global or local) is selected by the user, automatically switch to the global screening mode (run_correlation_screening).
+    # If no stratification (global or local) is selected by the user, automatically switch to the global screening mode (run_correlation_screening).
     # This prevents an ExcelWriter error "At least one sheet must be visible" when there are no sheets to write.
     is_no_subtype_run = False
     if subtype_col is None:
@@ -2162,7 +2160,7 @@ def run_subtype_screening(target_name, target_data, df_gene, df_pathway, df_clin
             for grp_name, grp_index in groups:                
                 try:                    
                     print(f"--> Calculating: {grp_name}")                    
-                    # [v82.2 Fix] Ensure all data is aligned based on the samples in the current group
+                    # Ensure all data is aligned based on the samples in the current group
                     valid_samples = grp_index.intersection(target_data.index).intersection(df_gene.index).intersection(df_pathway.index)
                     if len(valid_samples) < 3: continue
 
@@ -2186,7 +2184,7 @@ def run_subtype_screening(target_name, target_data, df_gene, df_pathway, df_clin
                     if FDR_ENABLED:
                         all_results = pd.concat([df_g, df_p], ignore_index=True)
                         if not all_results.empty:
-                            # [v82.3 Fix] Handle NaN P-values to avoid length mismatch after FDR correction
+                            # Handle NaN P-values to avoid length mismatch after FDR correction
                             not_na_mask = all_results['P'].notna()
                             if not_na_mask.any():
                                 p_values_no_na = all_results.loc[not_na_mask, 'P']
@@ -2196,10 +2194,10 @@ def run_subtype_screening(target_name, target_data, df_gene, df_pathway, df_clin
                         df_g = all_results.iloc[:len(df_g)].copy()
                         df_p = all_results.iloc[len(df_g):].copy()
 
-                    def get_top_tables(df_res, type_name): # FDR is now Adjusted_P_Value
+                    def get_top_tables(df_res, type_name): # FDR is now Adjusted_P_Value column
                         if df_res.empty: return pd.DataFrame(), pd.DataFrame()
                         df_sig = df_res[df_res['P'] < p_val_thresh].copy()
-                        # [v82.2 Fix] Add a hard limit to prevent memory explosion if p-value threshold is too loose.
+                        # Add a hard limit to prevent memory explosion if p-value threshold is too loose.
                         pos = df_sig[df_sig['R'] > 0].sort_values(by='R', ascending=False).head(5000)
                         neg = df_sig[df_sig['R'] < 0].sort_values(by='R', ascending=True).head(5000)
                         
@@ -2226,7 +2224,7 @@ def run_subtype_screening(target_name, target_data, df_gene, df_pathway, df_clin
 
 def run_differential_screening(group1_name, s_group1_idx, group2_name, s_group2_idx, df_gene, df_pathway, p_val_thresh=0.05, save_enabled=True, gene_to_drugs=None, pathway_to_genes=None):
     print(f"\nRunning differential analysis for {group1_name} vs {group2_name} (P < {p_val_thresh})...")
-    def _scan_diff(idx1, idx2, df_pool, desc):
+    def _scan_diff(idx1, idx2, df_pool, desc): # Scan for differential expression
         res = []
         for col_name, col_data in tqdm(df_pool.items(), total=df_pool.shape[1], desc=desc, ncols=80, leave=False):
             data1 = col_data.loc[col_data.index.intersection(idx1)].dropna()
@@ -2273,8 +2271,8 @@ def run_differential_screening(group1_name, s_group1_idx, group2_name, s_group2_
     # [FDR] Combine p-values from genes and pathways for FDR correction
     all_results = pd.concat([df_g, df_p], ignore_index=True)
     if FDR_ENABLED:
-        if not all_results.empty:
-            # [v82.3 Fix] Handle NaN P-values to avoid length mismatch after FDR correction
+        if not all_results.empty: # Handle NaN P-values
+            # Handle NaN P-values to avoid length mismatch after FDR correction
             not_na_mask = all_results['P_Value'].notna()
             if not_na_mask.any():
                 p_values_no_na = all_results.loc[not_na_mask, 'P_Value']
@@ -2305,7 +2303,7 @@ def run_differential_screening(group1_name, s_group1_idx, group2_name, s_group2_
 # ================= 8. Main Program =================
 def main():
     global IMG_EXT, IMG_DPI, DIST_PLOT_STYLE, FDR_ENABLED
-    print("Starting Analysis Tool (v82.1)...")
+    print("Starting Analysis Tool...")
     gene_file = 'Gene_expression.csv'; pathway_file = 'Signaling_pathway.csv'; clinical_file = 'Clinical_data.csv'; 
     protein_file = 'protein_zscores_TCGA.csv'; pathway_protein_file = 'Signaling_pathway_Protein.csv';
     knockdown_file = 'Knockdown_Dependency_Score.csv'
@@ -2432,7 +2430,7 @@ def main():
 
     while True:
         print("\n" + "="*70)
-        print(f"【 Gene Analysis Tool - v82.1 】")
+        print(f"【 Gene Analysis Tool 】")
         print(" 💡 [Tip] The system has virtual memory. Signatures you create can be used directly in sections [A], [B], [C]!")
         print(" 💡 [Formula] Supports Ratio (e.g., BCL2/CASP8) or Difference (e.g., BCL2 - CASP8) inputs.")
         
