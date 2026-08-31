@@ -127,7 +127,7 @@ No patient-identifiable information is included in this repository.
 ## Reproducibility
 
 The manuscript-associated version of this software is archived as
-release [VERSION].
+release v1.0.0.
 
 The source code contained in that release corresponds to the
 version used for the analyses reported in the manuscript.
